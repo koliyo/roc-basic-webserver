@@ -118,6 +118,7 @@ platform "webserver"
 		x64musl: { inputs: ["crt1.o", "libhost.a", "libunwind.a", app, "libc.a"] },
 		arm64musl: { inputs: ["crt1.o", "libhost.a", "libunwind.a", app, "libc.a"] },
 		x64win: { inputs: ["host.lib", app, "ws2_32.lib", "bcrypt.lib", "advapi32.lib"] },
+		wasm32: { inputs: ["host.o", app] },
 	}
 
 import Cmd

@@ -56,6 +56,12 @@ curl_form_output.txt
 # Host libraries are rebuilt by scripts/build.py and are NOT committed.
 platform/targets/*/libhost.a
 platform/targets/*/host.lib
+# wasm32 host.o and captured app objects are rebuilt by scripts/build_wasm32_object.py.
+platform/targets/wasm32/host.o
+platform/targets/wasm32/roc_app.o
+platform/targets/wasm32/hello-web.exports.wasm
+platform/targets/wasm32/hello-web.linked.wasm
+platform/targets/wasm32/roc-tmp/
 # Windows SDK import libraries are copied by scripts/build.py and are NOT committed.
 platform/targets/*/ws2_32.lib
 platform/targets/*/bcrypt.lib
