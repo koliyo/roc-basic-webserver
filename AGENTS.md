@@ -41,6 +41,7 @@ Build the host static library for the native target (writes `libhost.a` or
 python scripts/build.py                  # native target
 python scripts/build.py --target TARGET  # one specific target
 python scripts/build.py --all            # targets buildable from this host OS
+python scripts/build_wasm32_object.py    # wasm32 app object + roc_*_for_host exports
 ```
 
 Format, check, test, build, and run every active example through the
