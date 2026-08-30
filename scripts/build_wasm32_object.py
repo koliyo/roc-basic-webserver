@@ -16,6 +16,9 @@ PROVIDES = (
     "roc_init_for_host",
     "roc_respond_for_host",
     "roc_shutdown_for_host",
+    "roc_sse_advance_for_host",
+    "roc_sse_drop_source_for_host",
+    "roc_sse_drop_step_for_host",
 )
 OBJECT_NAME = "roc_app_llvm_wasm32_speed.o"
 PATH_RE = re.compile(r"(/[^\s]+/" + re.escape(OBJECT_NAME) + r")")
