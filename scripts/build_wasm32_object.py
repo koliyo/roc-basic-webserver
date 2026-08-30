@@ -50,6 +50,7 @@ def _copy_object_from(root: Path, dest: Path) -> bool:
 
 def capture_app_object(app: Path, dest: Path) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.unlink(missing_ok=True)
     roc_tmp = dest.parent / "roc-tmp"
     if roc_tmp.exists():
         shutil.rmtree(roc_tmp)
@@ -98,11 +99,15 @@ def capture_app_object(app: Path, dest: Path) -> None:
     found.wait(timeout=0.5)
     copied = dest.is_file()
     shutil.rmtree(roc_tmp, ignore_errors=True)
-    if code != 0:
-        raise SystemExit(code)
     if not copied or not dest.is_file():
+        if code != 0:
+            raise SystemExit(code)
         raise SystemExit(
             f"did not capture {OBJECT_NAME} under TMPDIR={roc_tmp}"
+        )
+    if code != 0:
+        print(
+            f"roc exited {code}; continuing because {OBJECT_NAME} was captured"
         )
     print(f"  -> {dest.relative_to(ROOT)}")
 
