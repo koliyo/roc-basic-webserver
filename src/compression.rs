@@ -6,8 +6,10 @@ use brotli::enc::encode::{
 };
 use brotli::enc::{
     interface, Allocator, BrotliAlloc, InputPair, InputReferenceMut, SliceWrapper, SliceWrapperMut,
-    StandardAlloc, StaticCommand,
+    StaticCommand,
 };
+#[cfg(test)]
+use brotli::enc::StandardAlloc;
 use brotli::CompressorWriter;
 use flate2::write::GzEncoder;
 use flate2::Compression;
@@ -139,6 +141,7 @@ impl RecyclingAlloc {
         }
     }
 
+    #[cfg(test)]
     pub fn stats(&self) -> RecyclerStats {
         self.stats
     }
@@ -237,6 +240,7 @@ pub(crate) struct BrotliEncoderStep {
 /// Dropping this value aborts without emitting a tail. `finish` must be driven
 /// to completion explicitly on a normal response close.
 enum ResumableBrotliState {
+    #[cfg(test)]
     Standard(Option<BrotliEncoderStateStruct<StandardAlloc>>),
     Recycled(Option<BrotliEncoderStateStruct<RecyclingAlloc>>),
 }
@@ -246,6 +250,7 @@ pub(crate) struct ResumableBrotli {
 }
 
 impl ResumableBrotli {
+    #[cfg(test)]
     pub(crate) fn new(quality: u32, window_bits: u32) -> Self {
         Self {
             state: ResumableBrotliState::Standard(Some(new_brotli_state(
@@ -308,6 +313,7 @@ impl ResumableBrotli {
         output: &mut [u8],
     ) -> io::Result<BrotliEncoderStep> {
         match &mut self.state {
+            #[cfg(test)]
             ResumableBrotliState::Standard(state) => brotli_operation_step(
                 state.as_mut().expect("live encoder has state"),
                 operation,
@@ -339,6 +345,7 @@ impl ResumableBrotli {
 impl Drop for ResumableBrotli {
     fn drop(&mut self) {
         match &mut self.state {
+            #[cfg(test)]
             ResumableBrotliState::Standard(state) => {
                 if let Some(mut state) = state.take() {
                     BrotliEncoderDestroyInstance(&mut state);

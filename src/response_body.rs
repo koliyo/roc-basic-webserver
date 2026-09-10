@@ -148,6 +148,7 @@ impl Buf for ServerData {
     }
 }
 
+#[cfg(test)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct ResponseFramePoolStats {
     pub(crate) slots: usize,
@@ -161,6 +162,7 @@ pub(crate) struct ResponseFramePoolStats {
 
 struct PoolState {
     free: Vec<Vec<u8>>,
+    #[cfg(test)]
     slots: usize,
     frame_bytes: usize,
     reserved: usize,
@@ -185,6 +187,7 @@ impl ResponseFramePool {
         Self {
             state: Arc::new(Mutex::new(PoolState {
                 free,
+                #[cfg(test)]
                 slots,
                 frame_bytes,
                 reserved: 0,
@@ -210,6 +213,7 @@ impl ResponseFramePool {
         })
     }
 
+    #[cfg(test)]
     pub(crate) fn stats(&self) -> ResponseFramePoolStats {
         let state = self.state.lock().expect("response frame pool poisoned");
         ResponseFramePoolStats {
@@ -338,10 +342,12 @@ impl Drop for PooledResponseFrame {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum SseCompression {
     Identity,
+    #[cfg(test)]
     Brotli {
         quality: u32,
         window_bits: u32,
     },
+    #[cfg(test)]
     RecycledBrotli {
         quality: u32,
         window_bits: u32,
@@ -383,6 +389,7 @@ pub(crate) enum SseSourcePoll {
     Error(io::Error),
 }
 
+#[cfg(test)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) struct SseBodyStats {
     pub(crate) frames: ResponseFramePoolStats,
@@ -406,10 +413,13 @@ struct SseLifecycle {
 
 #[derive(Clone)]
 pub(crate) struct SseBodyHandle {
+    #[cfg(test)]
     pool: ResponseFramePool,
+    #[cfg(test)]
     lifecycle: Arc<Mutex<SseLifecycle>>,
 }
 
+#[cfg(test)]
 impl SseBodyHandle {
     pub(crate) fn stats(&self) -> SseBodyStats {
         let lifecycle = self.lifecycle.lock().expect("SSE lifecycle poisoned");
@@ -476,10 +486,12 @@ impl SseBody {
         }));
         let encoder = match compression {
             SseCompression::Identity => None,
+            #[cfg(test)]
             SseCompression::Brotli {
                 quality,
                 window_bits,
             } => Some(ResumableBrotli::new(quality, window_bits)),
+            #[cfg(test)]
             SseCompression::RecycledBrotli {
                 quality,
                 window_bits,
@@ -491,7 +503,9 @@ impl SseBody {
             )),
         };
         let handle = SseBodyHandle {
+            #[cfg(test)]
             pool: pool.clone(),
+            #[cfg(test)]
             lifecycle: Arc::clone(&lifecycle),
         };
         (
@@ -528,7 +542,9 @@ impl SseBody {
             ..SseLifecycle::default()
         }));
         let handle = SseBodyHandle {
+            #[cfg(test)]
             pool: pool.clone(),
+            #[cfg(test)]
             lifecycle: Arc::clone(&lifecycle),
         };
         (
