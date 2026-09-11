@@ -68,7 +68,7 @@ def require_known_roc(roc: str) -> None:
 
 
 def find_glue_spec(roc: str) -> Path:
-    explicit = os.environ.get("ROC_GLUE_SPEC") or os.environ.get("ROC_RUST_GLUE")
+    explicit = os.environ.get("ROC_RUST_GLUE") or os.environ.get("ROC_GLUE_SPEC")
     if explicit:
         path = rooted_path(explicit)
         if not path.is_file():
@@ -101,6 +101,7 @@ def find_glue_spec(roc: str) -> Path:
     raise SystemExit(
         "Could not find RustGlue.roc.\n"
         "Set ROC_SRC=/path/to/roc or "
+        "ROC_RUST_GLUE=/path/to/RustGlue.roc or "
         "ROC_GLUE_SPEC=/path/to/RustGlue.roc."
     )
 

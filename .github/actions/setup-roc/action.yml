@@ -3,7 +3,7 @@ description: Install the exact new-compiler nightly selected by this repository
 
 inputs:
   with-source:
-    description: Download the matching Roc source tree for glue validation
+    description: Download the matching Roc source tree for glue validation. Needed until nightlies ship glue/RustGlue.roc in the compiler archive.
     required: false
     default: "false"
 
@@ -30,7 +30,7 @@ runs:
 
         printf 'nightly-tag=%s\n' "$nightly_tag" >> "$GITHUB_OUTPUT"
 
-    - uses: roc-lang/setup-roc@cbe782d6f165b89c87d99f50a59ac4f5f73b4427 # ratchet:roc-lang/setup-roc@v0.3.0
+    - uses: lukewilliamboswell/setup-roc@89a8a2945bd107f27b160096b3af7f52d2d78369
       with:
         version: nightly-new-compiler
         nightly-tag: ${{ steps.roc-version.outputs.nightly-tag }}
